@@ -1,136 +1,62 @@
 @import '../I.scss';
 
-.button {
-  border: 1px solid $border-color;
-  border-radius: 3px;
-  padding: 0 1em;
-  background: #FFF;
-  transition: background 0.1s ease-out 0s;
-  line-height: 2;
-  font-family: arial, sans-serif;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.select[disabled] .arrow svg {
+  stroke: $disabled-text-color;
+}
 
-  &.checked {
-    background: $checked-color;
+.arrow {
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  margin-right: -1em;
+  vertical-align: middle;
 
-    &:active {
-      background: color($checked-color l(- 10%));
-    }
+  svg {
+    transition: transform .1s linear;
 
-    &[disabled] {
-      background: $disabled-on-color;
-    }
+    stroke: black;
+    stroke-width: 2.5;
   }
 
-  &.loading {
-    @mixin loading
-    $disabled-color;
-    cursor: progress;
+  &.up svg {
+    transform: scale(.4) rotate(-180deg);
   }
 
-  &.action:not([disabled]) {
-    background: $action-color;
-
-    &:hover {
-      background: $action-hover-color;
-    }
-
-    &:focus {
-      animation: focus-ground 1s linear infinite;
-    }
-
-    &:active {
-      background: $action-pressed-color;
-      animation: none;
-    }
-
-  }
-
-  &:active {
-    background: $pressed-color;
-  }
-
-  &:hover {
-    border-color: $hover-border-color;
-  }
-
-  &:focus {
-    border-color: $focus-color;
-    box-shadow: inset 0 0 0 1px $focus-color;
-    outline: none;
-  }
-
-  &::-moz-focus-inner {
-    border: 0;
-    padding: 0;
-  }
-
-  &[disabled],
-  &.action {
-    border-color: transparent;
-    box-shadow: none;
-  }
-
-  &[disabled] {
-    background-color: $disabled-color;
-    color: rgba(0, 0, 0, .5);
-  }
-
-  &.size {
-    &-L {
-      font-size: 1.25rem;
-    }
-    &-M {
-      font-size: 1rem;
-    }
-    &-S {
-      font-size: .75rem;
-    }
-    &-XS {
-      border-radius: 2px;
-      font-size: .75rem;
-      padding: 0 .5em;
-      line-height: 1.5;
-    }
+  &.down svg {
+    transform: scale(.4);
   }
 }
 
-.group {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  position: relative;
-  z-index: 0;
+.check {
+  width: 2em;
+  height: 2em;
+  svg {
+    transform: scale(.5);
 
-  .button {
-    position: relative;
-    z-index: 0;
-
-    &:not(:last-child) {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    &:not(:first-child) {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      margin-left: -1px;
-    }
-
-    &.checked {
-      z-index: 1;
-    }
-
-    &:focus {
-      z-index: 2;
-    }
-
-    &:hover {
-      z-index: 3;
-    }
-
-    &[disabled] {
-      z-index: -1;
-    }
+    stroke: black;
+    stroke-width: 3;
   }
+}
+
+.options {
+  padding: .3em 0;
+  line-height: 2;
+}
+
+.option {
+  display: flex;
+  padding-right: 1em;
+  cursor: pointer;
+  user-select: none;
+  &.active {
+    background: $checked-color;
+  }
+}
+
+.placeholder {
+  color: $disabled-text-color;
+}
+
+.hidden {
+  display: none;
 }

@@ -1,6 +1,6 @@
 {
-  "name": "IButton",
+  "name": "IPopup",
   "version": "0.0.0",
   "private": true,
-  "main": "./IButton.js"
+  "main": "./IPopup.js"
 }

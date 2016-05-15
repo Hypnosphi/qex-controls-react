@@ -1,9 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import s from './SuggestExample.scss';
-import cx from 'classnames';
-import {ISuggest} from '../../blocks';
+import { ISuggest } from '../../blocks';
 
-function City({option: {city, countryCode}}) {
+function City({ option: { city, countryCode } }) {
   return (
     <div className={s.city}>
       {city}
@@ -11,7 +10,7 @@ function City({option: {city, countryCode}}) {
         {countryCode}
       </span>
     </div>
-  )
+  );
 }
 
 class SuggestExample extends Component {
@@ -21,15 +20,15 @@ class SuggestExample extends Component {
       {
         title: 'Array',
         props: {
-          options: ['One', 'Two', 'Three']
-        }
+          options: ['One', 'Two', 'Three'],
+        },
       },
       {
         title: 'URL',
         props: {
           url: 'http://jsonplaceholder.typicode.com/users',
-          valueField: 'name'
-        }
+          valueField: 'name',
+        },
       },
       {
         title: 'HTTP query',
@@ -37,8 +36,8 @@ class SuggestExample extends Component {
           url: 'http://jsonplaceholder.typicode.com/users?_limit=5',
           param: 'q',
           placeholder: 'Name, company etc.',
-          valueField: 'name'
-        }
+          valueField: 'name',
+        },
       },
       {
         title: 'Custom template',
@@ -50,20 +49,20 @@ class SuggestExample extends Component {
           options: [
             {
               city: 'London',
-              countryCode: 'GB'
+              countryCode: 'GB',
             },
             {
               city: 'Paris',
-              countryCode: 'FR'
+              countryCode: 'FR',
             },
             {
               city: 'Moscow',
-              countryCode: 'RU'
-            }
-          ]
-        }
-      }
-    ]
+              countryCode: 'RU',
+            },
+          ],
+        },
+      },
+    ],
   };
 
   constructor(props) {
@@ -72,10 +71,10 @@ class SuggestExample extends Component {
   }
 
   onSelect(i, value) {
-    let props = this.state.examples[i].props;
+    const props = this.state.examples[i].props;
     Object.assign(
       props,
-      {value}
+      { value }
     );
     this.setState(this.state);
   }
@@ -85,7 +84,7 @@ class SuggestExample extends Component {
       <div className={s.group}>
         <h3>ISuggest</h3>
         {this.state.examples.map(
-          ({title, props}, i) => (
+          ({ title, props }, i) => (
             <div className={s.example}>
               <h4>{title}</h4>
               <div className={s.container}>

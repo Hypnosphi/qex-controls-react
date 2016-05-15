@@ -1,13 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import s from './PopupExample.scss';
-import cx from 'classnames';
-import {IPopup} from '../../blocks';
+import { IPopup } from '../../blocks';
 
 function Popup({
   ownerLabel,
   contentLabel,
   children,
-  side
+  side,
 }) {
   return (
     <div className={s.owner}>

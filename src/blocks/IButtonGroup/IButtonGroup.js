@@ -2,62 +2,98 @@
  * Created by hypnos on 15/04/16.
  */
 
-import React, {Component, PropTypes} from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './IButton.scss';
-import cx from 'classnames';
+import React, { Component, PropTypes } from 'react';
+import { IButton } from '../IButton';
+import s from '../IButton/IButton.scss';
 
-function IButton(props) {
-  var {
-        size,
-        disabled,
-        loading,
-        onAction,
-        children,
-        fake
-      } = props,
-      blocked = disabled || loading,
-      TagName = fake ? 'div' : 'button';
+function IButtonGroup(props) {
+  const {
+    buttonProps,
+    buttons,
+    ButtonView,
+    onAction,
+    selected,
+  } = props;
 
   return (
-    <TagName
-      type="button"
-      tabIndex={blocked ? "-1" : "0"}
-      disabled={blocked}
-      className={cx(
-        s.root,
-        ...['checked', 'loading', 'action']
-          .filter(name => props[name])
-          .map(name => s[name]),
-        s[`size-${size}`]
-      )}
-      onClick={onAction}
+    <div
+      className={s.group}
     >
-      <div className={s.face}>
-        {children}
-      </div>
-    </TagName>
+      {buttons.map(
+        (button, i) => {
+          const key = button.value || i;
+          const buttonObj =
+            typeof button === 'string'
+              ? { label: button }
+              : button;
+          return (
+            <IButton
+              key = {key}
+              checked={selected.includes(key)}
+              onAction={function actionHandler(e) {
+                onAction(props, key, e);
+              }}
+
+              {...buttonProps}
+              {...buttonObj.props}
+            >
+              <ButtonView {...buttonObj} />
+            </IButton>
+          );
+        }
+      )}
+    </div>
   );
 }
 
-IButton.defaultProps = {
-  size: 'M',
-  checked:  false,
-  disabled: false,
-  loading:  false,
-  action: false,
-  onAction: e => e.stopPropagation()
-}
+IButtonGroup.defaultProps = {
+  ButtonView: ({ label }) => <span>{label}</span>,
+  selected: [],
+  mode: 'radio',
+  onAction({
+    onChange,
+    mode,
+    selected,
+  }, key, e) {
+    const includes = selected.includes(key);
+    const set = new Set(selected);
+    e.stopPropagation();
+    switch (mode) {
+      case 'radiocheck':
+        onChange(includes ? [] : [key]);
+        break;
+      case 'check':
+        set[includes ? 'delete' : 'add'](key);
+        onChange([...set]);
+        break;
+      case 'radio':
+      default:
+        onChange([key]);
+        break;
+    }
+  },
 
-IButton.propTypes = {
-  size: PropTypes.oneOf(['XS', 'S', 'M', 'L']),
-  checked: PropTypes.bool,
-  disabled: PropTypes.bool,
-  loading: PropTypes.bool,
-  action: PropTypes.bool,
-  onAction: PropTypes.func
-}
+  onChange: Function.prototype,
+};
 
-let styled = withStyles(IButton, s);
+IButtonGroup.propTypes = {
+  buttonProps: PropTypes.shape(IButton.propTypes),
+  buttons: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.shape({
+        props: PropTypes.shape(IButton.propTypes),
+      }),
+    ])
+  ),
+  ButtonView: PropTypes.oneOfType([
+    PropTypes.instanceOf(Component),
+    PropTypes.func,
+  ]),
+  selected: PropTypes.array,
+  mode: PropTypes.oneOf(['radio', 'radiocheck', 'check']),
+  onChange: PropTypes.func,
+  onAction: PropTypes.func,
+};
 
-export {styled as IButton};
+export { IButtonGroup };

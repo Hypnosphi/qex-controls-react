@@ -1,9 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import s from './SelectExample.scss';
-import cx from 'classnames';
-import {ISelect} from '../../blocks';
+import { ISelect } from '../../blocks';
 
-function City({option: {city, countryCode}}) {
+function City({ option: { city, countryCode } }) {
   return (
     <div className={s.city}>
       {city}
@@ -11,7 +10,7 @@ function City({option: {city, countryCode}}) {
         {countryCode}
       </span>
     </div>
-  )
+  );
 }
 
 class SelectExample extends Component {
@@ -21,8 +20,8 @@ class SelectExample extends Component {
       {
         title: 'Simple',
         props: {
-          options: ['One', 'Two', 'Three']
-        }
+          options: ['One', 'Two', 'Three'],
+        },
       },
       {
         title: 'Custom template',
@@ -34,20 +33,20 @@ class SelectExample extends Component {
           options: [
             {
               city: 'London',
-              countryCode: 'GB'
+              countryCode: 'GB',
             },
             {
               city: 'Paris',
-              countryCode: 'FR'
+              countryCode: 'FR',
             },
             {
               city: 'Moscow',
-              countryCode: 'RU'
-            }
-          ]
-        }
-      }
-    ]
+              countryCode: 'RU',
+            },
+          ],
+        },
+      },
+    ],
   };
 
   constructor(props) {
@@ -56,10 +55,10 @@ class SelectExample extends Component {
   }
 
   onSelect(i, value) {
-    let props = this.state.examples[i].props;
+    const props = this.state.examples[i].props;
     Object.assign(
       props,
-      {value}
+      { value }
     );
     this.setState(this.state);
   }
@@ -69,7 +68,7 @@ class SelectExample extends Component {
       <div className={s.group}>
         <h3>ISelect</h3>
         {this.state.examples.map(
-          ({title, props}, i) => (
+          ({ title, props }, i) => (
             <div className={s.example}>
               <h4>{title}</h4>
               <div className={s.container}>

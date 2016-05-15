@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import s from './ButtonGroupExample.scss';
 import cx from 'classnames';
-import {IButtonGroup} from '../../blocks';
+import { IButtonGroup } from '../../blocks';
 
-function Status({value, count}) {
+function Status({ value, count }) {
   return (
     <div className={s.status}>
       {value}
@@ -16,7 +16,7 @@ function Status({value, count}) {
         {count}
       </span>
     </div>
-  )
+  );
 }
 
 class ButtonGroupExample extends Component {
@@ -26,44 +26,44 @@ class ButtonGroupExample extends Component {
       {
         title: 'Radio mode (default)',
         props: {
-          buttons: ['One', 'Two', 'Three']
-        }
+          buttons: ['One', 'Two', 'Three'],
+        },
       },
       {
         title: 'Radiocheck mode',
         props: {
           buttons: ['One', 'Two', 'Three'],
-          mode: 'radiocheck'
-        }
+          mode: 'radiocheck',
+        },
       },
       {
         title: 'Check mode',
         props: {
           buttons: ['One', 'Two', 'Three'],
-          mode: 'check'
-        }
+          mode: 'check',
+        },
       },
       {
         title: 'Custom template',
         props: {
           buttons: [
             {
-              'value': 'running',
-              'count': 2
+              value: 'running',
+              count: 2,
             },
             {
-              'value': 'completed',
-              'count': 10
+              value: 'completed',
+              count: 10,
             },
             {
-              'value': 'failed',
-              'count': 3
-            }
+              value: 'failed',
+              count: 3,
+            },
           ],
-          ButtonView: Status
-        }
-      }
-    ]
+          ButtonView: Status,
+        },
+      },
+    ],
   };
 
   constructor(props) {
@@ -74,7 +74,7 @@ class ButtonGroupExample extends Component {
   onChange(i, selected) {
     Object.assign(
       this.state.examples[i].props,
-      {selected}
+      { selected }
     );
     this.setState(this.state);
   }
@@ -84,7 +84,7 @@ class ButtonGroupExample extends Component {
       <div className={s.group}>
         <h3>IButtonGroup</h3>
         {this.state.examples.map(
-          ({title, props}, i) => (
+          ({ title, props }, i) => (
             <div className={s.example}>
               <h4>{title}</h4>
               <div className={s.container}>

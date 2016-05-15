@@ -1,6 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import s from './ButtonExample.scss';
-import {IButton} from '../../blocks';
+import { IButton } from '../../blocks';
 
 class ButtonExample extends Component {
 
@@ -9,7 +9,7 @@ class ButtonExample extends Component {
     on: false,
     loading: false,
     loaded: false,
-    changed: false
+    changed: false,
   };
 
   constructor(props) {
@@ -26,7 +26,7 @@ class ButtonExample extends Component {
     this.setState({
       ...this.state,
       count: this.state.count + 1,
-      changed: true
+      changed: true,
     });
   }
 
@@ -34,7 +34,7 @@ class ButtonExample extends Component {
     this.setState({
       ...this.state,
       on: !this.state.on,
-      changed: true
+      changed: true,
     });
   }
 
@@ -42,7 +42,7 @@ class ButtonExample extends Component {
     this.setState({
       ...this.state,
       loading: true,
-      changed: true
+      changed: true,
     });
     window.setTimeout(
       this.loaded,
@@ -51,11 +51,13 @@ class ButtonExample extends Component {
   }
 
   loaded() {
-    this.state.changed && this.setState({
-      ...this.state,
-      loading: false,
-      loaded: true
-    });
+    if (this.state.changed) {
+      this.setState({
+        ...this.state,
+        loading: false,
+        loaded: true,
+      });
+    }
   }
 
   reset() {
@@ -112,8 +114,8 @@ class ButtonExample extends Component {
               this.state.loading
                 ? 'Loading...'
                 : this.state.loaded
-                ? 'Loaded'
-                : 'Not loaded'
+                  ? 'Loaded'
+                  : 'Not loaded'
             }
           </div>
         </div>

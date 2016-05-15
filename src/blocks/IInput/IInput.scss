@@ -1,137 +1,114 @@
 @import '../I.scss';
 
-.button{
-  border: 1px solid $border-color;
-  border-radius: 3px;
-  padding: 0 1em;
-  background: #FFF;
-  transition: background 0.1s ease-out 0s;
-  line-height: 2;
-  font-family: arial, sans-serif;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.root {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  vertical-align: baseline;
+  border: none;
 
-  &.checked{
-    background: $checked-color;
-
-    &:active{
-      background: color($checked-color l(- 10%));
+  .input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 2.2em 0 .6em;
+    font-family: arial, sans-serif;
+    font-size: 1em;
+    line-height: 2;
+    vertical-align: baseline;
+    border: 1px solid $border-color;
+    &:hover {
+      border-color: $hover-border-color;
+    }
+    &:focus {
+      border-color: $focus-color;
+      outline: none;
+      box-shadow: inset 0 0 0 1px $focus-color;
     }
 
-    &[disabled]{
-      background: $disabled-on-color;
+    &:disabled {
+      color: rgba(0,0,0,.5);
+      background-color: $disabled-color;
+      border-color: transparent;
+    }
+
+    &::-webkit-input-placeholder, &::-moz-placeholder {
+      color: #999;
     }
   }
 
-  &.loading{
-    @mixin loading $disabled-color;
+  .clear {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 2em;
+    height: 2em;
+    cursor: pointer;
+    &:not(:hover) {
+      opacity: .3;
+    }
+
+    svg {
+      transform: scale(.4);
+
+      stroke: black;
+      stroke-width: 2.5;
+    }
+  }
+
+  .loader {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 1em;
+    height: 2em;
+    overflow: hidden;
     cursor: progress;
-  }
+    transform-origin: 0 50%;
+    animation: spinner 1s linear infinite;
 
-  &.action:not([disabled]){
-    background: $action-color;
+    svg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200%;
+      height: 100%;
 
-    &:hover{
-      background: $action-hover-color;
+      stroke: $action-color;
+      fill: transparent;
+      stroke-width: 2;
     }
-
-    &:focus{
-      animation: focus-ground 1s linear infinite;
-    }
-
-    &:active{
-      background: $action-pressed-color;
-      animation: none;
-    }
-
-
-  }
-
-  &:active{
-    background: $pressed-color;
-  }
-
-  &:hover{
-    border-color: $hover-border-color;
-  }
-
-  &:focus{
-    border-color: $focus-color;
-    box-shadow: inset 0 0 0 1px $focus-color;
-    outline:none;
-  }
-
-  &::-moz-focus-inner {
-    border: 0;
-  }
-
-  &[disabled],
-  &.action{
-    border-color: transparent;
-    box-shadow: none;
-  }
-
-  &[disabled]{
-    background-color: $disabled-color;
-    color: rgba(0,0,0,.5);
   }
 
 
-
-  &.size{
-    &-L{
+  &.size {
+    &-L {
       font-size: 1.25rem;
     }
-    &-M{
+    &-M {
       font-size: 1rem;
     }
-    &-S{
+    &-S {
       font-size: .75rem;
     }
-    &-XS{
-      border-radius: 2px;
+    &-XS {
       font-size: .75rem;
-      padding: 0 .5em;
-      line-height: 1.5;
+      .input {
+        line-height: 1.5;
+      }
+      .clear {
+        width: 1.5em;
+        height: 1.5em;
+      }
     }
   }
 }
 
-.root{
-  display: inline-flex;
-  flex-wrap: nowrap;
-  position: relative;
-  z-index: 0;
-}
-
-.button{
-  position: relative;
-  z-index: 0;
-
-  &:not(:last-child){
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
   }
-
-  &:not(:first-child){
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    margin-left: -1px;
-  }
-
-  &.checked{
-    z-index: 1;
-  }
-
-  &:focus{
-    z-index: 2;
-  }
-
-  &:hover{
-    z-index: 3;
-  }
-
-  &[disabled]{
-    z-index: -1;
+  to {
+    transform: rotate(360deg);
   }
 }

@@ -1,0 +1,47 @@
+$border-color: rgba(0,0,0,.2);
+$hover-border-color: rgba(0,0,0,.3);
+$focus-color: hsl(48,100%,50%);
+$checked-color: color($focus-color l(+30%));
+$pressed-color: #f3f1ed;
+$disabled-color: rgba(0, 0, 0, .08);
+$disabled-text-color: rgba(0, 0, 0, .5);
+$action-color: color($focus-color l(+15%));
+$action-hover-color: color($focus-color l(+10%));
+$action-pressed-color: $focus-color;
+$action-focus-color: color($focus-color l(+20%));
+$off-color: rgba(0, 0, 0, .05);
+$disabled-on-color: rgba(0, 0, 0, .15);
+
+@define-mixin striped $color, $angle {
+  background-image: linear-gradient($angle, $color 25%, transparent 25%, transparent 50%, $color 50%, $color 75%, transparent 75%, transparent);
+}
+
+@define-mixin loading $color {
+  background-color: $color;
+  background-size: 40px 40px;
+  transition: width .6s ease 0s;
+  animation: progress-bar-stripes 2s linear infinite;
+  @mixin striped $color, 45deg;
+}
+
+
+
+@keyframes progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+@keyframes focus-ground {
+  from,
+  to {
+    background: $focus-color;
+  }
+  40%,
+  60% {
+    background: $action-focus-color;
+  }
+}

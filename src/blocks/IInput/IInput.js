@@ -2,63 +2,115 @@
  * Created by hypnos on 15/04/16.
  */
 
-import React, {Component, PropTypes} from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './IButton.scss';
+import React, { PropTypes } from 'react';
+import { Cross } from '../Icons.js';
+import s from './IInput.scss';
 import cx from 'classnames';
 
-function IButton(props) {
-  let {
-        size,
-        disabled,
-        loading,
-        onAction,
-        children,
-        fake,
-        className
-      } = props,
-      blocked = disabled || loading,
-      TagName = fake ? 'div' : 'button';
+function IInput(props) {
+  const {
+    size,
+    disabled,
+    value,
+    placeholder,
+    loading,
+    onChange,
+    onInput,
+    onKey,
+    mode: TagName,
+    className,
+    autoFocus,
+  } = props;
+  let input;
 
   return (
-    <TagName
-      type="button"
-      tabIndex={blocked ? "-1" : "0"}
-      disabled={blocked}
+    <div
       className={cx(
-        s.button,
-        ...['checked', 'loading', 'action']
+        s.root,
+        ...['disabled', 'loading']
           .filter(name => props[name])
           .map(name => s[name]),
-        s[`size-${size}`]
+        s[`size-${size}`],
+        className
       )}
-      onClick={onAction}
     >
-      <div className={s.face}>
-        {children}
+      <TagName
+        {
+          ...{
+            disabled,
+            loading,
+            value,
+            placeholder,
+          }
+        }
+        ref={function ref(el) {
+          input = el;
+          autoFocus(el && el.focus.bind(el));
+        }}
+
+        onChange={function changeHandler(e) {
+          onChange(props, e);
+        }}
+
+        onKeyUp={onKey}
+        onKeyDown={onKey}
+        className={s.input}
+      />
+      <div
+        className={s.clear}
+        onClick={function clickHandler() {
+          if (input) {
+            input.focus();
+          }
+
+          onInput('');
+        }}
+
+        hidden={!value || disabled || loading}
+      >
+        <Cross />
       </div>
-    </TagName>
+      <div
+        className={s.loader}
+        hidden={!loading}
+      >
+        <svg>
+          <circle
+            cx="50%" cy="50%"
+            r="20%"
+          />
+        </svg>
+      </div>
+    </div>
   );
 }
 
-IButton.defaultProps = {
+IInput.defaultProps = {
   size: 'M',
-  checked:  false,
   disabled: false,
-  loading:  false,
-  action: false,
-  onAction: e => e.stopPropagation()
+  loading: false,
+  mode: 'input',
+  onChange({ onInput }, e) {
+    onInput(e.target.value);
+  },
+
+  onInput: Function.prototype,
+  onKey: Function.prototype,
+  autoFocus: Function.prototype,
 };
 
-IButton.propTypes = {
+IInput.propTypes = {
   size: PropTypes.oneOf(['XS', 'S', 'M', 'L']),
-  checked: PropTypes.bool,
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
-  action: PropTypes.bool,
-  onAction: PropTypes.func
+  value: PropTypes.string,
+  placeholder: PropTypes.string,
+  onChange: PropTypes.func,
+  onInput: PropTypes.func,
+  onKey: PropTypes.func,
+  mode: PropTypes.oneOf(['input', 'textarea']),
+  autoFocus: PropTypes.func,
+  className: PropTypes.string,
 };
 
-let styled = withStyles(IButton, s);
-
-export {styled as IButton};
+export { IInput };

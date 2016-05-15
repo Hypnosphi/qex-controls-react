@@ -2,54 +2,71 @@
  * Created by hypnos on 15/04/16.
  */
 
-import {Component, PropTypes:{bool, oneOf, func}} from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import React, { PropTypes } from 'react';
 import s from './IButton.scss';
 import cx from 'classnames';
 
 function IButton(props) {
-  var {
-        size,
-        disabled,
-        loading,
-        onAction,
-        children
-      } = props;
+  const {
+    size,
+    disabled,
+    loading,
+    onAction,
+    onKeyDown,
+    onKeyUp,
+    children,
+    fake,
+    className,
+  } = props;
+  const blocked = disabled || loading;
+  const TagName = fake ? 'div' : 'button';
 
   return (
-    <button
+    <TagName
       type="button"
-      disabled={disabled || loading}
+      tabIndex={blocked ? '-1' : '0'}
+      disabled={blocked}
       className={cx(
-        s.root,
-        ...[checked, loading, action]
-          .filter(name => props.name)
-          .map(name => s.name),
-        s[`size-@{size}`]
+        s.button,
+        ...['checked', 'loading', 'action']
+          .filter(name => props[name])
+          .map(name => s[name]),
+        s[`size-${size}`],
+        className
       )}
       onClick={onAction}
+      onKeyDown={onKeyDown}
+      onKeyUp={onKeyUp}
     >
-      <div className={s.face}>
-        {children}
-      </div>
-    </button>
+      {children}
+    </TagName>
   );
-  }
 }
 
 IButton.defaultProps = {
   size: 'M',
-  checked:  false,
+  checked: false,
   disabled: false,
-  loading:  false,
-  action: false
-}
+  loading: false,
+  action: false,
+  fake: false,
+  onAction: e => e.stopPropagation(),
+  onKeyDown: Function.prototype,
+  onKeyUp: Function.prototype,
+};
 
 IButton.propTypes = {
-  size: oneOf(['XS', 'S', 'M', 'L']),
-  checked: bool,
-  disabled: bool,
-  loading: bool,
-  action: bool,
-  onAction: func
-}
+  size: PropTypes.oneOf(['XS', 'S', 'M', 'L']),
+  checked: PropTypes.bool,
+  disabled: PropTypes.bool,
+  loading: PropTypes.bool,
+  action: PropTypes.bool,
+  fake: PropTypes.bool,
+  onAction: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  onKeyUp: PropTypes.func,
+  className: PropTypes.string,
+  children: PropTypes.any,
+};
+
+export { IButton };

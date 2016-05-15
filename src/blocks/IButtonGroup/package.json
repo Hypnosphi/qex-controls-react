@@ -1,6 +1,6 @@
 {
-  "name": "IButton",
+  "name": "IButtonGroup",
   "version": "0.0.0",
   "private": true,
-  "main": "./IButton.js"
+  "main": "./IButtonGroup.js"
 }

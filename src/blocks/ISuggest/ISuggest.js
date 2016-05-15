@@ -2,211 +2,179 @@
  * Created by hypnos on 15/04/16.
  */
 
-import React, {Component, PropTypes} from 'react';
-import s from './ISelect.scss';
-import {IButton} from '../IButton';
-import {IPopup} from '../IPopup';
-import {Arrow, Check} from '../Icons.js';
-import cx from 'classnames';
+import React, { Component, PropTypes } from 'react';
+import s from './ISuggest.scss';
+import { ISelect } from '../ISelect';
+import { IInput } from '../IInput';
+import 'whatwg-fetch';
 
-class ISelect extends Component {
+class ISuggest extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
-      active: -1
+      options: null,
+      loading: false,
+      inputValue: '',
     };
-    this.toggle = this.toggle.bind(this);
-    this.keyDown = this.keyDown.bind(this);
-    this.keyUp = this.keyUp.bind(this);
+    this.onInput = this.onInput.bind(this);
   }
 
-  toggle(on) {
+  componentDidMount() {
+    if (this.props.url) {
+      this.fetch();
+    }
+    this.focusable = this.props.value;
+  }
+
+  componentDidUpdate() {
+    if (
+      !this.props.value
+        && this.focusable
+        && this.focus
+    ) {
+      this.focus();
+    }
+    this.focusable = this.props.value;
+  }
+
+  onInput(inputValue) {
     this.setState({
       ...this.state,
-      open: on,
-      active: on ? this.state.active : -1
+      inputValue,
     });
+    if (this.props.url && this.props.param) {
+      this.debouncedFetch(50);
+    }
+    this.select.openWithFirst();
   }
 
-  setActive(i) {
+  async fetch() {
     this.setState({
       ...this.state,
-      active: i
+      loading: true,
     });
-  }
 
-  select(option) {
-    this.popup && this.popup.toggle(false);
-    this.props.onSelect(option);
-  }
+    const {
+      param,
+      url,
+      } = this.props;
+    const hasQuery = url.includes('?');
+    const input = encodeURIComponent(this.state.inputValue);
+    const fetchUrl = param
+      ? `${url}${hasQuery ? '&' : '?'}${param}=${input}`
+      : url;
+    const request = this.request = fetch(fetchUrl);
+    const response = await request;
+    const data = await response.json();
 
-  focusPrev() {
-    let i = this.state.active - 1;
-    i >= 0
-      ? this.setActive(i)
-      : this.popup && this.popup.toggle(false);
-  }
-
-  focusNext() {
-    let i = this.state.active + 1;
-    i == 0 && this.popup && this.popup.toggle(true);
-    i < this.props.options.length && this.setActive(i);
-  }
-
-  selectActive() {
-    let i = this.state.active;
-    i >= 0
-      ? this.select(this.props.options[i])
-      : this.popup && this.popup.toggle();
-  }
-
-  keyDown(e) {
-    switch (e.key) {
-      case 'ArrowUp':
-        e.preventDefault();
-        e.stopPropagation();
-        this.focusPrev();
-        break;
-      case 'ArrowDown':
-        e.preventDefault();
-        e.stopPropagation();
-        this.focusNext();
-        break;
-      case 'Enter':
-      case ' ':
-        e.preventDefault();
-        break;
+    if (this.request === request) {// use only latest request data
+      this.setState({
+        ...this.state,
+        options: data,
+        loading: false,
+      });
     }
   }
 
-  keyUp(e) {
-    switch (e.key) {
-      case 'Enter':
-      case ' ':
-        e.preventDefault();
-        this.selectActive();
-        break;
+  debouncedFetch(delay) {
+    if (this.fetchTO) {
+      window.clearTimeout(this.fetchTO);
     }
+
+    this.fetchTO = window.setTimeout(
+      () => {
+        delete this.fetchTO;
+        this.fetch();
+      },
+      delay
+    );
   }
 
   render() {
-    let {
-          disabled,
-          loading,
-          options,
-          value,
-          valueField,
-          ButtonView,
-          OptionView,
-          placeholder,
-          popupProps,
-          onSelect,
-        } = this.props,
-        blocked = disabled || loading || options.length == 0,
-        selected = value && options.find(
-          option => option == value || option[valueField] == value
-        );
-
+    const {
+      options,
+      value,
+      valueField,
+      ValueView,
+      InputView,
+      ButtonView,
+      arrow,
+      onSelect,
+      param,
+    } = this.props;
     return (
-      <div
-        disabled={blocked}
-        className={s.select}
-      >
-        <IButton
-          {...this.props}
-          fake
-          onKeyDown={this.keyDown}
-          onKeyUp={this.keyUp}
-        >
-          <ButtonView option={selected} placeholder={placeholder}/>
-          <div
-            className={cx(
-            s.arrow,
-            this.state.open ? s.up : s.down
-          )}
-          >
-            <Arrow />
-          </div>
-          <IPopup
-            {...popupProps}
-            disabled={blocked}
-            onToggle={this.toggle}
-            ref={el => this.popup = el}
-          >
-            <div
-              className={s.options}
-              onMouseLeave={this.setActive.bind(this, -1)}
-            >
-              {
-                options.map(
-                  (option, i) => (
-                    <div
-                      key={option[valueField] || option}
-                      className={cx(
-                        s.option,
-                        i == this.state.active && s.active
-                      )}
-                      onClick={this.select.bind(this, option)}
-                      onMouseEnter={this.setActive.bind(this, i)}
-                    >
-                      <div className={s.check}>
-                        {option == selected && <Check />}
-                      </div>
-                      <OptionView option={option} />
-                    </div>
-                  )
-                )
+      <ISelect
+        {...this.props}
+        arrow={value ? arrow : false}
+        allowEmpty
+        autoFocus={func => {this.focus = func;}}
+        inputValue={this.state.inputValue}
+        inputLoading={this.state.loading}
+        options={
+          (this.state.options || options)
+            .filter(
+              option => {
+                const txt = (option[valueField] || option).toLowerCase();
+                return param && (!this.state.loading)
+                  || txt.startsWith(this.state.inputValue.toLowerCase());
               }
-            </div>
-          </IPopup>
-        </IButton>
-      </div>
+            )
+        }
+        buttonClassName={value ? '' : s.inputButton}
+        ButtonView={value ? ValueView : InputView}
+        OriginalButtonView={ButtonView}
+        onInput={this.onInput}
+        onSelect={
+          (option) => {
+            if (!option) {
+              this.onInput('');
+            }
+            onSelect(option);
+          }
+        }
+        onKey={e => e.key === ' ' && e.stopPropagation()}
+        ref={select => {this.select = select;}}
+      />
     );
   }
 }
 
-function DefaultView({option, placeholder}) {
-  return (
-    <span
-      className= {option ? '' : s.placeholder}
-    >
-      {
-        option
-          ? option.label || option
-          : placeholder
-      }
-    </span>
-  );
-}
-
-ISelect.defaultProps = {
-  ...IButton.defaultProps,
-  options: [],
-  value: null,
-  valueField: 'value',
-  ButtonView: DefaultView,
-  OptionView: DefaultView,
-  placeholder: 'None',
-  popupProps: {},
-  onSelect: Function.prototype
+ISuggest.defaultProps = {
+  ...ISelect.defaultProps,
+  url: '',
+  param: '',
+  InputView: ({ props }) => (
+    <IInput
+      {...props}
+      value={props.inputValue}
+      loading={props.inputLoading}
+      className={s.input}
+    />
+  ),
+  ValueView: obj => {
+    const {
+      OriginalButtonView,
+      onSelect,
+    } = obj.props;
+    return (
+      <div
+        className={s.value}
+        onClick={() => onSelect(null)}
+      >
+        <OriginalButtonView {...obj} />
+      </div>
+    );
+  },
 };
 
-ISelect.propTypes = {
-  ...IButton.propTypes,
-  options: PropTypes.array,
-  valueField: PropTypes.string,
-  ButtonView: PropTypes.oneOfType([
+ISuggest.propTypes = {
+  ...ISelect.propTypes,
+  url: PropTypes.string,
+  param: PropTypes.string,
+  InputView: PropTypes.oneOfType([
     PropTypes.instanceOf(Component),
-    PropTypes.func
+    PropTypes.func,
   ]),
-  OptionView: PropTypes.oneOfType([
-    PropTypes.instanceOf(Component),
-    PropTypes.func
-  ]),
-  placeholder: PropTypes.string,
-  popupProps: PropTypes.shape(IPopup.propTypes),
-  onSelect: PropTypes.func
 };
 
-export {ISelect};
+export { ISuggest };
