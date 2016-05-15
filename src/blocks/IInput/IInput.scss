@@ -1,0 +1,137 @@
+@import '../I.scss';
+
+.button{
+  border: 1px solid $border-color;
+  border-radius: 3px;
+  padding: 0 1em;
+  background: #FFF;
+  transition: background 0.1s ease-out 0s;
+  line-height: 2;
+  font-family: arial, sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.checked{
+    background: $checked-color;
+
+    &:active{
+      background: color($checked-color l(- 10%));
+    }
+
+    &[disabled]{
+      background: $disabled-on-color;
+    }
+  }
+
+  &.loading{
+    @mixin loading $disabled-color;
+    cursor: progress;
+  }
+
+  &.action:not([disabled]){
+    background: $action-color;
+
+    &:hover{
+      background: $action-hover-color;
+    }
+
+    &:focus{
+      animation: focus-ground 1s linear infinite;
+    }
+
+    &:active{
+      background: $action-pressed-color;
+      animation: none;
+    }
+
+
+  }
+
+  &:active{
+    background: $pressed-color;
+  }
+
+  &:hover{
+    border-color: $hover-border-color;
+  }
+
+  &:focus{
+    border-color: $focus-color;
+    box-shadow: inset 0 0 0 1px $focus-color;
+    outline:none;
+  }
+
+  &::-moz-focus-inner {
+    border: 0;
+  }
+
+  &[disabled],
+  &.action{
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  &[disabled]{
+    background-color: $disabled-color;
+    color: rgba(0,0,0,.5);
+  }
+
+
+
+  &.size{
+    &-L{
+      font-size: 1.25rem;
+    }
+    &-M{
+      font-size: 1rem;
+    }
+    &-S{
+      font-size: .75rem;
+    }
+    &-XS{
+      border-radius: 2px;
+      font-size: .75rem;
+      padding: 0 .5em;
+      line-height: 1.5;
+    }
+  }
+}
+
+.root{
+  display: inline-flex;
+  flex-wrap: nowrap;
+  position: relative;
+  z-index: 0;
+}
+
+.button{
+  position: relative;
+  z-index: 0;
+
+  &:not(:last-child){
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &:not(:first-child){
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -1px;
+  }
+
+  &.checked{
+    z-index: 1;
+  }
+
+  &:focus{
+    z-index: 2;
+  }
+
+  &:hover{
+    z-index: 3;
+  }
+
+  &[disabled]{
+    z-index: -1;
+  }
+}

@@ -1,0 +1,56 @@
+@import '../I.scss';
+
+.select[disabled] .arrow svg {
+  stroke: $disabled-text-color;
+}
+
+.arrow{
+  display: inline-block;
+  height: 2em;
+  width: 2em;
+  margin-right: -1em;
+
+  svg {
+    stroke: black;
+    stroke-width: 2.5;
+    transition: transform .1s linear;
+  }
+
+  &.up svg{
+    transform: scale(.4) rotate(-180deg);
+  }
+
+  &.down svg{
+    transform: scale(.4);
+  }
+
+}
+
+.check{
+  height: 2em;
+  width: 2em;
+  svg {
+    stroke: black;
+    transform: scale(.5);
+    stroke-width: 3;
+  }
+}
+
+.options{
+  line-height: 2;
+  padding: .3em 0;
+}
+
+.option{
+  display: flex;
+  padding-right: 1em;
+  cursor: pointer;
+  user-select: none;
+  &.active{
+    background: $checked-color;
+  }
+}
+
+.placeholder{
+  color: $disabled-text-color;
+}

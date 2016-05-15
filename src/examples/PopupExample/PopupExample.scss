@@ -1,0 +1,15 @@
+@import '../ContentPage/ContentPage.scss';
+
+.owner{
+  border-bottom: 1px dotted black;
+  cursor: pointer;
+}
+
+.popup {
+  padding: .5rem;
+}
+
+.col{
+  display: flex;
+  flex-direction: column;
+}

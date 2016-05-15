@@ -1,0 +1,6 @@
+{
+  "name": "ISelect",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ISelect.js"
+}
